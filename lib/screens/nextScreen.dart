@@ -3,6 +3,7 @@
 
 import 'package:daily_fitness_app/screens/thirdScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 class NextScreen extends StatefulWidget {
   final String gettitle, getdesc, getimage, getnumber;
 
@@ -21,6 +22,35 @@ class NextScreen extends StatefulWidget {
 }
 
 class _NextScreenState extends State<NextScreen> {
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initBannerAd();
+  }
+  var adUnit = "ca-app-pub-1570709206699249/7246887519";
+  late BannerAd _bannerAd;
+  bool isLoaded = false;
+  initBannerAd(){
+    _bannerAd = BannerAd(
+        size: AdSize.banner,
+        adUnitId: adUnit,
+        listener: BannerAdListener(
+            onAdLoaded: (ad){
+              setState(() {
+                isLoaded = true;
+              });
+            },
+            onAdFailedToLoad: (ad, error){
+              ad.dispose();
+              print(error);
+            }
+        ),
+        request: AdRequest()
+    );
+
+    _bannerAd.load();
+  }
 
 
   @override
@@ -420,7 +450,13 @@ class _NextScreenState extends State<NextScreen> {
             )
           ],
         ),
+
       ),
+      bottomNavigationBar: isLoaded ? SizedBox(
+        height: _bannerAd.size.height.toDouble(),
+        width:_bannerAd.size.width.toDouble(),
+        child: AdWidget(ad: _bannerAd),
+      ) : const SizedBox(),
     );
   }
 }

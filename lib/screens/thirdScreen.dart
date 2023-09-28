@@ -21,7 +21,7 @@ class _ThirdScreenState extends State<ThirdScreen> {
     super.initState();
     initBannerAd();
   }
-  var adUnit = "ca-app-pub-3940256099942544/6300978111";
+  var adUnit = "ca-app-pub-1570709206699249/4972363375";
   late BannerAd _bannerAd;
   bool isLoaded = false;
   initBannerAd(){
@@ -94,8 +94,7 @@ class _ThirdScreenState extends State<ThirdScreen> {
                 ),
               ),
             ),
-
-
+            
           ],
         ),
       ),

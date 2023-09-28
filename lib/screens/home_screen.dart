@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'nextScreen.dart';
 
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final List<Map<String, dynamic>> workoutData = [
     {
       'title': 'UPPER BODY',
@@ -80,11 +86,41 @@ class Home extends StatelessWidget {
 
 // bahi yaha pr ap  na jo title or dec or image path hai wo write kr do
   ];
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initBannerAd();
+  }
+  var adUnit = "ca-app-pub-1570709206699249/9630037538";
+  late BannerAd _bannerAd;
+  bool isLoaded = false;
+  initBannerAd(){
+    _bannerAd = BannerAd(
+        size: AdSize.banner,
+        adUnitId: adUnit,
+        listener: BannerAdListener(
+            onAdLoaded: (ad){
+              setState(() {
+                isLoaded = true;
+              });
+            },
+            onAdFailedToLoad: (ad, error){
+              ad.dispose();
+              print(error);
+            }
+        ),
+        request: AdRequest()
+    );
+
+    _bannerAd.load();
+  }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height * 1;
     final width = MediaQuery.of(context).size.width * 1;
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -103,6 +139,11 @@ class Home extends StatelessWidget {
           },
         ),
       ),
+      bottomNavigationBar: isLoaded ? SizedBox(
+        height: _bannerAd.size.height.toDouble(),
+        width:_bannerAd.size.width.toDouble(),
+        child: AdWidget(ad: _bannerAd),
+      ) : const SizedBox(),
     );
   }
 
